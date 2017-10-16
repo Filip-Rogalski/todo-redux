@@ -1,5 +1,58 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { createStore } from 'redux'
+import App from './components/App'
+import todoApp from './reducers/reducers'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+
+
+import {
+  addTodo,
+  toggleTodo
+} from './actions/actions'
+
+const store = createStore(todoApp)
+const rootEl = document.getElementById('root')
+
+console.log(store.getState());
+
+
+// Log the initial state
+console.log(store.getState())
+
+// Every time the state changes, log it
+// Note that subscribe() returns a function for unregistering the listener
+let unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
+
+// Dispatch some actions
+store.dispatch(addTodo('Learn about actions'))
+store.dispatch(addTodo('Learn about reducers'))
+store.dispatch(addTodo('Learn about store'))
+store.dispatch(toggleTodo(0))
+store.dispatch(toggleTodo(1))
+
+// Stop listening to state updates
+unsubscribe()
+
+
+
+
+
+
+
+
+
+
+
+const render = () => ReactDOM.render(<App 
+    value={store.getState()}
+    addTodo={() => store.dispatch({ type: 'ADD_TODO' })}
+    removeTodo={() => store.dispatch({ type: 'REMOVE_TODO' })}
+    toggleTodo={() => store.dispatch({ type: 'TOGGLE_TODO' })}
+/>, 
+rootEl)
+
+render()
+store.subscribe(render)

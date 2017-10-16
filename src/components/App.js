@@ -2,41 +2,22 @@ import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
-    constructor(){
-        super();
-        this.state = {
-            tasks: [
-                {
-                    id: 0,
-                    name: "alfa",
-                    starred: true
-                },
-                {
-                    id: 1,
-                    name: "beta",
-                    starred: false
-                }, 
-                {
-                    id: 2,
-                    name: "gamma",
-                    starred: false
-                }
-            ], 
-            counter: 0,
-            visibilityFilter: null
-        };
-    }
-    
-    componentDidMount = () => {
-        this.setState({
-            counter: this.state.tasks.length
-        });
+    constructor(props){
+        super(props);
+        console.log(props);
     }
     
     handleSubmit = (e) => {
         e.preventDefault();
+        let text = this.refs.newTaskInput.value;
+        console.log(text);
+        this.props.addTodo(text);
+        
+        /*
         if (this.refs.newTaskInput.value.length > 0) {
-            let previousTasks = this.state.tasks,
+            
+            
+            let previousTasks = this.props.value.tasks,
                 counter = this.state.counter,
                 newTask = {
                     id: counter,
@@ -50,11 +31,16 @@ class App extends Component {
                 counter: counter + 1
             });
         }
+        */
         this.refs.newTaskInput.value = null;
     }
     
     handleRemove = (e) => {
-        let taskToRemove = parseInt(e.target.parentElement.dataset.taskid, 10),
+        let taskToRemove = parseInt(e.target.parentElement.dataset.taskid, 10);
+        console.log(taskToRemove);
+        this.props.removeTodo(taskToRemove);
+        
+        /*
             currentTasks = this.state.tasks,
             updatedTasks = currentTasks.filter(task => {
             return task.id !== taskToRemove;
@@ -62,9 +48,11 @@ class App extends Component {
         this.setState({
             tasks: updatedTasks
         });
+        */
     }
     
     handleToggleStar = (e) => {
+        /*
         let taskToToggleStar = parseInt(e.target.parentElement.dataset.taskid, 10),
             currentTasks = this.state.tasks,
             taskObject = currentTasks.find(task => task.id === taskToToggleStar),
@@ -77,6 +65,7 @@ class App extends Component {
         this.setState({
             tasks: updatedTasks
         });
+        */
     }
     
     render() {
@@ -94,7 +83,7 @@ class App extends Component {
                 </div>
                 <div className="task-display">
                     <ul>
-                    {this.state.tasks.map(task => (
+                    {this.props.value.tasks.map(task => (
                         <li key={task.id} data-taskid={task.id}>
                             <span className={"task-name " + (task.starred ? "starred" : "unstarred")}>{task.name}</span>
                             <button ref="removeBtn" className="remove-btn" onClick={this.handleRemove}>Remove</button>
