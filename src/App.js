@@ -22,23 +22,32 @@ class App extends Component {
                     starred: false
                 }
             ], 
+            counter: 0,
             visibilityFilter: null
         };
+    }
+    
+    componentDidMount = () => {
+        this.setState({
+            counter: this.state.tasks.length
+        });
     }
     
     handleSubmit = (e) => {
         e.preventDefault();
         if (this.refs.newTaskInput.value.length > 0) {
             let previousTasks = this.state.tasks,
+                counter = this.state.counter,
                 newTask = {
-                    id: previousTasks.length,
+                    id: counter,
                     name: this.refs.newTaskInput.value,
                     starred: false
                 };
             previousTasks.push(newTask);
             let currentTasks = previousTasks;
             this.setState({
-                tasks: currentTasks
+                tasks: currentTasks,
+                counter: counter + 1
             });
         }
         this.refs.newTaskInput.value = null;
@@ -58,11 +67,12 @@ class App extends Component {
     handleToggleStar = (e) => {
         let taskToToggleStar = parseInt(e.target.parentElement.dataset.taskid, 10),
             currentTasks = this.state.tasks,
-            taskObject = currentTasks[taskToToggleStar],
+            taskObject = currentTasks.find(task => task.id === taskToToggleStar),
+            taskPosition = currentTasks.indexOf(taskObject),
             starValue = taskObject.starred,
             newStarValue = starValue ? false : true;
         taskObject.starred = newStarValue;
-        currentTasks.splice(taskToToggleStar, 1, taskObject);
+        currentTasks.splice(taskPosition, 1, taskObject);
         let updatedTasks = currentTasks;
         this.setState({
             tasks: updatedTasks
